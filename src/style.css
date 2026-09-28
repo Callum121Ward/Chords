@@ -304,7 +304,17 @@ select,
   cursor: pointer;
 }
 
+select.play-button {
+  min-width: 0;
+  padding: 0 4px;
+  text-align: center;
+  text-align-last: center;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
 .play-button.primary {
+  flex: 1.3;
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-text);

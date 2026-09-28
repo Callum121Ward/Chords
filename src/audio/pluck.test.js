@@ -1,5 +1,5 @@
 ﻿import { describe, expect, test } from 'vitest'
-import { pluckSamples, noteTimes } from './pluck.js'
+import { pluckSamples, noteTimes, TONES, DEFAULT_TONE } from './pluck.js'
 
 // A repeatable "random" sequence, so the tests give the same result every time.
 function seeded(seed = 1) {
@@ -47,6 +47,43 @@ describe('plucked string sound', () => {
       const actual = (RATE / (period + 0.5)) * playbackRate
       expect(Math.abs(actual - frequency) / frequency).toBeLessThan(0.001)
     }
+  })
+})
+
+describe('tones', () => {
+  // How harsh a sound is: how much it jumps between neighbouring samples, relative to its loudness.
+  // Bright, scratchy sounds jump a lot; mellow, rounded ones change smoothly.
+  const harshness = (samples) => {
+    let diff = 0
+    let level = 0
+    for (let i = 1; i < 4410; i++) {
+      diff += (samples[i] - samples[i - 1]) ** 2
+      level += samples[i] ** 2
+    }
+    return Math.sqrt(diff / level)
+  }
+  const sound = (tone, frequency = 196) => pluckSamples(frequency, RATE, { ...TONES[tone], random: seeded() }).samples
+
+  test('mellow is smoother than bright, and warm is smoother still', () => {
+    expect(harshness(sound('mellow'))).toBeLessThan(harshness(sound('bright')) * 0.6)
+    expect(harshness(sound('warm'))).toBeLessThan(harshness(sound('mellow')))
+  })
+
+  test('every tone starts at a similar volume and never clips', () => {
+    for (const tone of Object.keys(TONES)) {
+      const samples = sound(tone)
+      expect(loudness(samples, 0, 2205), tone).toBeGreaterThan(0.1)
+      expect(samples.every((s) => Math.abs(s) <= 1), tone).toBe(true)
+    }
+  })
+
+  test('the tone does not change the pitch', () => {
+    const rates = Object.keys(TONES).map((tone) => pluckSamples(246.94, RATE, { ...TONES[tone], seconds: 0.1 }).playbackRate)
+    expect(new Set(rates).size).toBe(1)
+  })
+
+  test('the default tone exists', () => {
+    expect(TONES[DEFAULT_TONE]).toBeDefined()
   })
 })
 

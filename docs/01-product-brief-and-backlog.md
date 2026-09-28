@@ -60,9 +60,10 @@ Hosted free on GitHub Pages.
 15. Microphone chord recognition (hard).
 16. Other instruments (guitar, mandolin, ukulele, 4-string banjo).
 17. Reverse lookup: pick any chord, see all shapes for it in the current tuning.
-18. Capo support.
+18. ✅ Capo support (optionally including the 5th string; key moves with the capo; Clear keeps it). Shipped 2026-09-29.
 19. Left-handed neck.
 20. Saved favourite shapes.
+21. ✅ Tone choice: Mellow (default), Warm, Bright. Shipped 2026-09-29.
 
 ### Won't have (this version)
 - Accounts, sync, sharing, payments, App Store release.
