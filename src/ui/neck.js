@@ -24,7 +24,9 @@ export function scrollToFret(el, fret) {
   el.scrollTo({ top: Math.max(0, (fret - 1.5) * FRET_HEIGHT * unitsToPixels), behavior: 'smooth' })
 }
 
-export function renderNeck(el, { instrument, notes, positions }) {
+// `instrument` is the banjo as it plays with the capo on (strings start at the capo);
+// `baseInstrument` is the real banjo, used to draw where the strings physically begin.
+export function renderNeck(el, { instrument, baseInstrument = instrument, capo = { fret: 0 }, notes, positions }) {
   const frets = instrument.frets
   const height = fretY(frets) + 12
   const neckMiddle = MARGIN + (instrument.strings.length * COLUMN) / 2
@@ -52,13 +54,30 @@ export function renderNeck(el, { instrument, notes, positions }) {
   }
 
   // Strings (the short 5th string starts at its peg, at its start fret)
-  instrument.strings.forEach((string, i) => {
+  baseInstrument.strings.forEach((string, i) => {
     const top = fretY(string.startFret)
     parts.push(`<line class="string" x1="${stringX(i)}" x2="${stringX(i)}" y1="${top}" y2="${height}" />`)
     if (string.startFret > 0) {
       parts.push(`<circle class="peg" cx="${stringX(i)}" cy="${top}" r="7" />`)
     }
   })
+
+  // Capo: shade the frets behind it, then draw the bar (and the 5th-string spike, if used)
+  if (capo.fret > 0) {
+    instrument.strings.forEach((string, i) => {
+      const from = baseInstrument.strings[i].startFret
+      if (string.startFret === from) return // this string isn't capo'd
+      const x = stringX(i) - COLUMN / 2
+      parts.push(`<rect class="behind-capo" x="${x}" y="${fretY(from)}" width="${COLUMN}" height="${fretY(string.startFret) - fretY(from)}" />`)
+    })
+    const barLeft = stringX(1) - COLUMN / 2 + 4
+    const y = fretY(capo.fret) - 7
+    parts.push(`<rect class="capo" x="${barLeft}" y="${y}" width="${WIDTH - barLeft - 4}" height="14" rx="7" />`)
+    if (capo.fifth) {
+      const spike = fretY(instrument.strings[0].startFret)
+      parts.push(`<rect class="capo" x="${stringX(0) - 9}" y="${spike - 5}" width="18" height="10" rx="3" />`)
+    }
+  }
 
   // Invisible tap targets, one per string per fret
   instrument.strings.forEach((string, i) => {
