@@ -49,11 +49,11 @@ Hosted free on GitHub Pages.
 8. **Chords that go with it.** The app shows the chords in the key with their numbers (1, 2m, 3m, 4, 5, 6m, 7°) and highlights the most common next chords from the current one (e.g. from 1 → 4, 5, 6m).
 9. **Works on iPhone.** Layout fits a phone screen and is usable with a thumb.
 
-### Should have (v0.2)
+### Should have (v0.2) ✅ shipped 2026-09-29
 10. ✅ **Play the chord** through the speaker (strummed and one note at a time). Tapping the neck plays that string.
 11. ✅ **Alternative names & inversion** (e.g. "C6 = Am7/C"; bass note shown). Unusual names are flagged.
 12. ✅ **Installable & offline** (PWA manifest + service worker, banjo icon).
-13. **Tap a suggested chord** to see a shape for it on the neck in the current tuning.
+13. ✅ **Tap a suggested chord** to see a shape for it on the neck in the current tuning. Easiest shape near the nut first; ‹ › step through the best shape at each position up the neck.
 
 ### Could have (later)
 14. Microphone tuner for the real banjo.
@@ -76,6 +76,8 @@ Hosted free on GitHub Pages.
 - 2026-09-29: Chord notes are spelled the way they're played (G, not F##), even when theory would spell them differently.
 - 2026-09-29: Sound is synthesised (Karplus–Strong), so no audio files are needed.
 - 2026-09-29: Play buttons sit at the very bottom, so they don't move as the chord panel changes size.
+- 2026-09-29: Compact chord panel (unusual-chord note removed) so an iPhone 17 shows 6+ frets.
+- 2026-09-29: Playable shape = all chord notes (5th optional in 4-note chords), within 4 frets, max 4 fingers, max 1 muted string besides the 5th.
 
 ## 5. Known iPhone/PWA constraints
 - Audio can't start until the user taps something (Safari autoplay rule).

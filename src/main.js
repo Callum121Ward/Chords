@@ -1,10 +1,11 @@
-import './style.css'
+﻿import './style.css'
 import { Note } from 'tonal'
 import { BANJO, TUNINGS } from './music/instrument.js'
 import { playedNotes } from './music/fretboard.js'
 import { identifyChord } from './music/chords.js'
 import { prefersFlats } from './music/nashville.js'
-import { renderNeck } from './ui/neck.js'
+import { findShapes } from './music/shapes.js'
+import { renderNeck, scrollToFret } from './ui/neck.js'
 import { renderPanel } from './ui/panel.js'
 import { loadState, saveState, loadCustomTunings, saveCustomTunings } from './storage.js'
 import { play, playString, PICK_GAP } from './audio/player.js'
@@ -29,6 +30,7 @@ function defaultState() {
     key: tuning.key,
     positions: BANJO.strings.map(() => 0), // all strings open
     tapSound: true, // play a string's note when you tap the neck
+    browse: null, // after tapping a key chord: { symbol, name, index } of the shape being shown
   }
 }
 
@@ -53,6 +55,31 @@ function render() {
   renderStringHeads(flats)
   renderNeck($('neck'), { instrument: BANJO, notes, positions: state.positions })
   renderPanel($('panel'), { chord, notes, key: state.key })
+  renderShapeNav()
+}
+
+// The floating ‹ C · 1 of 7 › control over the neck, while browsing shapes for a chord.
+function renderShapeNav() {
+  const nav = $('shape-nav')
+  nav.hidden = !state.browse
+  if (!state.browse) return
+  const count = shapesFor(state.browse.symbol).length
+  const { name, index } = state.browse
+  $('shape-label').textContent = count ? `${name} · ${index + 1} of ${count}` : `No easy shape for ${name}`
+  $('shape-prev').disabled = index <= 0
+  $('shape-next').disabled = index >= count - 1
+}
+
+const shapesFor = (symbol) => findShapes(BANJO, state.tuningNotes, symbol)
+
+// Put the chosen shape on the neck, scroll to it and (if sounds are on) strum it.
+function showShape(symbol, name, index) {
+  const shape = shapesFor(symbol)[index]
+  if (!shape) return update({ browse: { symbol, name, index: 0 } })
+  update({ positions: shape, browse: { symbol, name, index } })
+  const fretted = shape.filter((p) => p > 0)
+  scrollToFret($('neck'), fretted.length ? Math.min(...fretted) : 1)
+  if (state.tapSound) play(currentNotes)
 }
 
 function options(values, selected, label = (v) => v) {
@@ -102,7 +129,7 @@ $('neck').addEventListener('click', (event) => {
   const fret = Number(cell.dataset.fret)
   const positions = [...state.positions]
   positions[string] = positions[string] === fret ? 0 : fret // tap again to lift the finger
-  update({ positions })
+  update({ positions, browse: null })
   if (state.tapSound) playString(currentNotes, string)
 })
 
@@ -116,7 +143,7 @@ $('string-heads').addEventListener('click', (event) => {
   const string = Number(button.dataset.string)
   const positions = [...state.positions]
   positions[string] = positions[string] === null ? 0 : null
-  update({ positions })
+  update({ positions, browse: null })
 })
 
 $('string-heads').addEventListener('change', (event) => {
@@ -126,17 +153,27 @@ $('string-heads').addEventListener('change', (event) => {
   tuningNotes[Number(select.dataset.string)] = select.value
   // If the new notes happen to match a saved tuning, show its name.
   const match = allTunings().find((t) => t.notes.every((n, i) => Note.midi(n) === Note.midi(tuningNotes[i])))
-  update({ tuningNotes, tuningName: match ? match.name : CUSTOM })
+  update({ tuningNotes, tuningName: match ? match.name : CUSTOM, browse: null })
 })
 
 $('tuning').addEventListener('change', (event) => {
   const tuning = allTunings().find((t) => t.name === event.target.value)
-  if (tuning) update({ tuningName: tuning.name, tuningNotes: [...tuning.notes], key: tuning.key })
+  if (tuning) update({ tuningName: tuning.name, tuningNotes: [...tuning.notes], key: tuning.key, browse: null })
 })
 
-$('key').addEventListener('change', (event) => update({ key: event.target.value }))
+$('key').addEventListener('change', (event) => update({ key: event.target.value, browse: null }))
 
-$('clear').addEventListener('click', () => update({ positions: BANJO.strings.map(() => 0) }))
+$('clear').addEventListener('click', () => update({ positions: BANJO.strings.map(() => 0), browse: null }))
+
+// Tap a chord in the key row to see (and hear) a shape for it.
+$('panel').addEventListener('click', (event) => {
+  const chip = event.target.closest('.key-chip')
+  if (chip) showShape(chip.dataset.symbol, chip.dataset.name, 0)
+})
+
+$('shape-prev').addEventListener('click', () => showShape(state.browse.symbol, state.browse.name, state.browse.index - 1))
+$('shape-next').addEventListener('click', () => showShape(state.browse.symbol, state.browse.name, state.browse.index + 1))
+$('shape-close').addEventListener('click', () => update({ browse: null }))
 
 $('save-tuning').addEventListener('click', () => {
   const name = prompt('Name this tuning:', state.tuningName === CUSTOM ? '' : state.tuningName)?.trim()

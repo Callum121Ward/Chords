@@ -32,11 +32,12 @@ export function nashvilleNumber(chord, key) {
 }
 
 // The seven chords that belong to a major key, with their numbers.
+// `name` is for display (F#°); `symbol` is the chord in the form the music code understands (F#dim).
 export function keyChords(key) {
   return Key.majorKey(key).triads.map((triad, i) => {
     const name = triad.replace(/dim$/, '°')
     const quality = triad.endsWith('dim') ? '°' : triad.endsWith('m') ? 'm' : ''
-    return { number: `${i + 1}${quality}`, name }
+    return { number: `${i + 1}${quality}`, name, symbol: triad }
   })
 }
 

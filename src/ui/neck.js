@@ -17,6 +17,13 @@ const stringX = (i) => MARGIN + COLUMN / 2 + i * COLUMN
 const fretY = (fret) => fret * FRET_HEIGHT // y of the fret wire
 const cellY = (fret) => (fret - 0.5) * FRET_HEIGHT // middle of the space above that wire
 
+// Scroll the neck so the given fret is near the top of the visible area.
+export function scrollToFret(el, fret) {
+  const svg = el.querySelector('svg')
+  const unitsToPixels = svg.getBoundingClientRect().width / WIDTH
+  el.scrollTo({ top: Math.max(0, (fret - 1.5) * FRET_HEIGHT * unitsToPixels), behavior: 'smooth' })
+}
+
 export function renderNeck(el, { instrument, notes, positions }) {
   const frets = instrument.frets
   const height = fretY(frets) + 12

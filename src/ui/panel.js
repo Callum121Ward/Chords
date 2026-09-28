@@ -50,7 +50,8 @@ function keySection(chord, key) {
   const chips = chords
     .map((c) => {
       const cls = c.number === current ? 'current' : next.includes(c.number) ? 'next' : ''
-      return `<li class="key-chip ${cls}"><span class="chip-number">${c.number}</span><span class="chip-name">${c.name}</span></li>`
+      return `<li><button type="button" class="key-chip ${cls}" data-symbol="${c.symbol}" data-name="${c.name}"
+        aria-label="Show a shape for ${c.name}"><span class="chip-number">${c.number}</span><span class="chip-name">${c.name}</span></button></li>`
     })
     .join('')
 

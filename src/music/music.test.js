@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+﻿import { describe, expect, test } from 'vitest'
 import { BANJO, TUNINGS } from './instrument.js'
 import { noteAt, playedNotes } from './fretboard.js'
 import { identifyChord, intervalLabel } from './chords.js'
@@ -120,13 +120,13 @@ describe('Nashville numbers', () => {
 describe('key chords', () => {
   test('the seven chords of G major', () => {
     expect(keyChords('G')).toEqual([
-      { number: '1', name: 'G' },
-      { number: '2m', name: 'Am' },
-      { number: '3m', name: 'Bm' },
-      { number: '4', name: 'C' },
-      { number: '5', name: 'D' },
-      { number: '6m', name: 'Em' },
-      { number: '7°', name: 'F#°' },
+      { number: '1', name: 'G', symbol: 'G' },
+      { number: '2m', name: 'Am', symbol: 'Am' },
+      { number: '3m', name: 'Bm', symbol: 'Bm' },
+      { number: '4', name: 'C', symbol: 'C' },
+      { number: '5', name: 'D', symbol: 'D' },
+      { number: '6m', name: 'Em', symbol: 'Em' },
+      { number: '7°', name: 'F#°', symbol: 'F#dim' },
     ])
   })
 

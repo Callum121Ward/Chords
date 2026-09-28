@@ -29,7 +29,16 @@
 
       <div id="string-heads" class="string-heads"></div>
 
-      <main id="neck" class="neck-scroll" aria-label="Banjo neck. Tap a fret to place a finger."></main>
+      <div class="neck-area">
+        <main id="neck" class="neck-scroll" aria-label="Banjo neck. Tap a fret to place a finger."></main>
+        <!-- Shown after tapping a chord in the key row: step through shapes for that chord. -->
+        <div id="shape-nav" class="shape-nav" hidden>
+          <button id="shape-prev" type="button" aria-label="Previous shape (lower on the neck)">‹</button>
+          <span id="shape-label" aria-live="polite"></span>
+          <button id="shape-next" type="button" aria-label="Next shape (higher on the neck)">›</button>
+          <button id="shape-close" type="button" class="close" aria-label="Close">✕</button>
+        </div>
+      </div>
 
       <section id="panel" class="panel" aria-live="polite"></section>
 
