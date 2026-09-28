@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Source for all app icons. Regenerate PNGs with: npm run icons -->
+  <rect width="512" height="512" fill="#b5561f"/>
+  <g transform="translate(256 256) scale(0.86) translate(-256 -256) rotate(-35 256 256)">
+    <!-- neck and headstock -->
+    <rect x="232" y="40" width="48" height="250" rx="6" fill="#6b4a2b"/>
+    <rect x="220" y="24" width="72" height="56" rx="14" fill="#4f341d"/>
+    <!-- pot (drum) -->
+    <circle cx="256" cy="336" r="132" fill="#e9dcc3"/>
+    <circle cx="256" cy="336" r="132" fill="none" stroke="#4f341d" stroke-width="16"/>
+    <!-- bridge and strings -->
+    <rect x="222" y="372" width="68" height="10" rx="3" fill="#6b4a2b"/>
+    <g stroke="#f6f1e8" stroke-width="3">
+      <line x1="241" y1="80" x2="241" y2="440"/>
+      <line x1="250" y1="80" x2="250" y2="440"/>
+      <line x1="259" y1="80" x2="259" y2="440"/>
+      <line x1="268" y1="80" x2="268" y2="440"/>
+    </g>
+    <g stroke="#4f341d" stroke-width="3">
+      <line x1="241" y1="290" x2="241" y2="440"/>
+      <line x1="250" y1="290" x2="250" y2="440"/>
+      <line x1="259" y1="290" x2="259" y2="440"/>
+      <line x1="268" y1="290" x2="268" y2="440"/>
+    </g>
+    <!-- tailpiece -->
+    <rect x="236" y="436" width="40" height="16" rx="4" fill="#4f341d"/>
+  </g>
+</svg>
