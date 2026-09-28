@@ -1,6 +1,6 @@
-# Chord Simulator — Product Brief & Backlog
+﻿# Chord Simulator — Product Brief & Backlog
 
-_Status: Phase 1–2 agreed · Last updated 2026-09-28_
+_Status: v0.1 live, v0.2 in progress · Last updated 2026-09-29 · Live at https://callum121ward.github.io/Chords/_
 
 ## 1. Product brief
 
@@ -38,7 +38,7 @@ Hosted free on GitHub Pages.
 
 ## 3. Backlog (MoSCoW)
 
-### Must have — MVP (v0.1)
+### Must have — MVP (v0.1) ✅ shipped 2026-09-28
 1. **Show a neck.** I see a 5-string banjo neck (strings, frets, position markers).
 2. **Custom tuning.** I can set each string's note (default open G: g D G B D) and save presets.
 3. **5th-string handling.** The short 5th (drone) string starts at the 5th fret, as on a real banjo.
@@ -50,9 +50,9 @@ Hosted free on GitHub Pages.
 9. **Works on iPhone.** Layout fits a phone screen and is usable with a thumb.
 
 ### Should have (v0.2)
-10. **Play the chord** through the speaker (strummed and one note at a time).
-11. **Alternative names & inversion** (e.g. "C6 = Am7/C"; bass note shown).
-12. **Installable & offline** (PWA manifest + service worker).
+10. ✅ **Play the chord** through the speaker (strummed and one note at a time). Tapping the neck plays that string.
+11. ✅ **Alternative names & inversion** (e.g. "C6 = Am7/C"; bass note shown). Unusual names are flagged.
+12. ✅ **Installable & offline** (PWA manifest + service worker, banjo icon).
 13. **Tap a suggested chord** to see a shape for it on the neck in the current tuning.
 
 ### Could have (later)
@@ -72,7 +72,11 @@ Hosted free on GitHub Pages.
 - 2026-09-28: Microphone moved out of the MVP.
 - 2026-09-28: Banjo only for the MVP. Code should still keep instrument details (string count, short strings) in data, so other instruments can be added later.
 - 2026-09-28: MVP adds Nashville numbers (relative to a user-chosen key), per-note display and harmonising chords.
+- 2026-09-28: Show the chord name without the slash (G), with the bass note underneath (D in bass).
+- 2026-09-29: Chord notes are spelled the way they're played (G, not F##), even when theory would spell them differently.
+- 2026-09-29: Sound is synthesised (Karplus–Strong), so no audio files are needed.
+- 2026-09-29: Play buttons sit at the very bottom, so they don't move as the chord panel changes size.
 
 ## 5. Known iPhone/PWA constraints
 - Audio can't start until the user taps something (Safari autoplay rule).
-- The ring/silent switch may mute web audio. Test this on the device.
+- The ring/silent switch may mute web audio. We request "playback" audio mode (iOS 17+). Confirmed working on device 2026-09-29.
