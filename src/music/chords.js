@@ -21,7 +21,8 @@ export function identifyChord(notes) {
     root, // 'E'
     suffix, // 'm7'
     bass, // 'B' (null when the root is the lowest note)
-    alternatives: others.map(tidyName), // other valid names for the same notes, e.g. ['G6/B']
+    // Other familiar names for the same notes, e.g. ['G6/B'] (skips odd ones like 'Bm#5/D')
+    alternatives: others.filter(isFamiliar).map(tidyName),
     tones: chord.notes.map((note, i) => ({ note, role: intervalLabel(chord.intervals[i]) })),
   }
 }
@@ -37,6 +38,8 @@ function commonness(name) {
   const rank = FAMILIAR.indexOf(suffix)
   return (rank === -1 ? 100 : rank) + (bass ? 10 : 0)
 }
+
+const isFamiliar = (name) => FAMILIAR.includes(splitName(name).suffix)
 
 // tonal writes 'GM' and 'GMadd9'; musicians write 'G' and 'Gadd9'.
 function tidyName(name) {

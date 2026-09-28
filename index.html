@@ -2,12 +2,35 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f1e8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1b1814" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Banjo Chords" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>banjo-chords</title>
+    <title>Banjo Chords</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <header class="controls">
+        <label class="field">
+          <span>Tuning</span>
+          <select id="tuning"></select>
+        </label>
+        <button id="save-tuning" type="button" class="small-button">Save</button>
+        <label class="field">
+          <span>Key</span>
+          <select id="key"></select>
+        </label>
+        <button id="clear" type="button" class="small-button">Clear</button>
+      </header>
+
+      <div id="string-heads" class="string-heads"></div>
+
+      <main id="neck" class="neck-scroll" aria-label="Banjo neck. Tap a fret to place a finger."></main>
+
+      <section id="panel" class="panel" aria-live="polite"></section>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

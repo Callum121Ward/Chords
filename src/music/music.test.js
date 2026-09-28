@@ -70,6 +70,10 @@ describe('chord names', () => {
     expect(chordFor([X, 2, 0, 0, 0]).alternatives).toContain('G6/E')
   })
 
+  test('hides unfamiliar alternative names', () => {
+    expect(chordFor([0, 0, 0, 0, 0]).alternatives).toEqual([]) // not 'Bm#5/D'
+  })
+
   test('a single note, or no notes, is not a chord', () => {
     expect(chordFor([X, X, 0, X, X])).toBeNull()
     expect(chordFor([X, X, X, X, X])).toBeNull()
