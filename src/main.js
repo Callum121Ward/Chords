@@ -7,6 +7,7 @@ import { prefersFlats } from './music/nashville.js'
 import { renderNeck } from './ui/neck.js'
 import { renderPanel } from './ui/panel.js'
 import { loadState, saveState, loadCustomTunings, saveCustomTunings } from './storage.js'
+import { play, playString, PICK_GAP } from './audio/player.js'
 
 const KEYS = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F']
 const CUSTOM = 'Custom'
@@ -17,7 +18,8 @@ const $ = (id) => document.getElementById(id)
 // ---- State: everything the screen shows is worked out from this ----
 
 let customTunings = loadCustomTunings()
-let state = loadState() ?? defaultState()
+let state = { ...defaultState(), ...loadState() }
+let currentNotes = [] // the note on each string right now (worked out in render)
 
 function defaultState() {
   const tuning = TUNINGS[0]
@@ -26,6 +28,7 @@ function defaultState() {
     tuningNotes: [...tuning.notes],
     key: tuning.key,
     positions: BANJO.strings.map(() => 0), // all strings open
+    tapSound: true, // play a string's note when you tap the neck
   }
 }
 
@@ -43,8 +46,10 @@ function render() {
   const flats = prefersFlats(state.key)
   const notes = playedNotes(BANJO, state.tuningNotes, state.positions, flats)
   const chord = identifyChord(notes)
+  currentNotes = notes
 
   renderControls()
+  $('tap-sound').setAttribute('aria-pressed', String(state.tapSound))
   renderStringHeads(flats)
   renderNeck($('neck'), { instrument: BANJO, notes, positions: state.positions })
   renderPanel($('panel'), { chord, notes, key: state.key })
@@ -98,7 +103,12 @@ $('neck').addEventListener('click', (event) => {
   const positions = [...state.positions]
   positions[string] = positions[string] === fret ? 0 : fret // tap again to lift the finger
   update({ positions })
+  if (state.tapSound) playString(currentNotes, string)
 })
+
+$('strum').addEventListener('click', () => play(currentNotes))
+$('pick').addEventListener('click', () => play(currentNotes, PICK_GAP))
+$('tap-sound').addEventListener('click', () => update({ tapSound: !state.tapSound }))
 
 $('string-heads').addEventListener('click', (event) => {
   const button = event.target.closest('.mute')

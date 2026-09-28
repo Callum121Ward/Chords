@@ -30,6 +30,13 @@
       <main id="neck" class="neck-scroll" aria-label="Banjo neck. Tap a fret to place a finger."></main>
 
       <section id="panel" class="panel" aria-live="polite"></section>
+
+      <!-- At the very bottom so the buttons never move as the chord panel changes size. -->
+      <div class="play-bar">
+        <button id="strum" type="button" class="play-button primary">▶ Strum</button>
+        <button id="pick" type="button" class="play-button">Pick notes</button>
+        <button id="tap-sound" type="button" class="play-button toggle" aria-pressed="true">Tap sound</button>
+      </div>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
