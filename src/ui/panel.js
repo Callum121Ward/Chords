@@ -21,6 +21,9 @@ function chordSection(chord, key) {
   const also = chord.alternatives.length
     ? `<div class="also">Also called: ${chord.alternatives.join(', ')}</div>`
     : ''
+  const unusual = chord.unusual
+    ? `<div class="also">Unusual shape: this is the closest standard chord name for these notes.</div>`
+    : ''
 
   return `
     <div class="chord-head">
@@ -34,7 +37,7 @@ function chordSection(chord, key) {
       </div>
     </div>
     <ul class="tones" aria-label="Notes in the chord">${tones}</ul>
-    ${also}`
+    ${also}${unusual}`
 }
 
 function noChordSection(notes) {

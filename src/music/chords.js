@@ -23,8 +23,19 @@ export function identifyChord(notes) {
     bass, // 'B' (null when the root is the lowest note)
     // Other familiar names for the same notes, e.g. ['G6/B'] (skips odd ones like 'Bm#5/D')
     alternatives: others.filter(isFamiliar).map(tidyName),
-    tones: chord.notes.map((note, i) => ({ note, role: intervalLabel(chord.intervals[i]) })),
+    // True when even the best name is an unusual chord type (e.g. 'B7#5#9'), so the screen can say so.
+    unusual: !isFamiliar(best),
+    tones: chord.notes.map((note, i) => ({
+      note: asPlayed(note, pitchClasses),
+      role: intervalLabel(chord.intervals[i]),
+    })),
   }
+}
+
+// Theory can spell a note in a way that looks nothing like what you're fretting
+// (G written as 'F##'). Show it the way it's played instead.
+function asPlayed(note, playedPitchClasses) {
+  return playedPitchClasses.find((pc) => Note.chroma(pc) === Note.chroma(note)) ?? note
 }
 
 // Chord types, most familiar first. tonal can name the same notes several ways
