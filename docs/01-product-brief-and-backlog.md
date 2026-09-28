@@ -79,4 +79,4 @@ Hosted free on GitHub Pages.
 
 ## 5. Known iPhone/PWA constraints
 - Audio can't start until the user taps something (Safari autoplay rule).
-- The ring/silent switch may mute web audio. We request "playback" audio mode (iOS 17+). Confirmed working on device 2026-09-29.
+- The ring/silent switch may mute web audio. We request "playback" audio mode (iOS 17+). Sound confirmed on device 2026-09-29; silent-switch behaviour still to check.
