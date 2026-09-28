@@ -23,8 +23,6 @@ export function identifyChord(notes) {
     bass, // 'B' (null when the root is the lowest note)
     // Other familiar names for the same notes, e.g. ['G6/B'] (skips odd ones like 'Bm#5/D')
     alternatives: others.filter(isFamiliar).map(tidyName),
-    // True when even the best name is an unusual chord type (e.g. 'B7#5#9'), so the screen can say so.
-    unusual: !isFamiliar(best),
     tones: chord.notes.map((note, i) => ({
       note: asPlayed(note, pitchClasses),
       role: intervalLabel(chord.intervals[i]),

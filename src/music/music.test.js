@@ -70,13 +70,11 @@ describe('chord names', () => {
     expect(chordFor([X, 2, 0, 0, 0]).alternatives).toContain('G6/E')
   })
 
-  test('unusual chords: notes shown as played (G, not F##) and flagged', () => {
+  test('unusual chords: notes shown as played (G, not F##)', () => {
     // 5th open, 4th open, 3rd fret 2, 2nd open, 1st fret 1 in Open G
     const chord = chordFor([0, 0, 2, 0, 1])
     expect(chord.name).toBe('B7#5#9/D')
-    expect(chord.unusual).toBe(true)
     expect(chord.tones.map((t) => `${t.note}:${t.role}`)).toEqual(['B:R', 'D#:3', 'G:♯5', 'A:♭7', 'D:♯9'])
-    expect(chordFor([0, 0, 0, 0, 0]).unusual).toBe(false)
   })
 
   test('hides unfamiliar alternative names', () => {

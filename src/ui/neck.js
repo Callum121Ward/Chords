@@ -9,7 +9,7 @@ import { Note } from 'tonal'
 const WIDTH = 300
 const MARGIN = 30
 const COLUMN = 54
-const FRET_HEIGHT = 56
+const FRET_HEIGHT = 48 // about 60 points per fret on an iPhone 17: easy to hit with a thumb
 const SINGLE_DOTS = [3, 5, 7, 10, 15, 17, 19, 22]
 const DOUBLE_DOTS = [12]
 
