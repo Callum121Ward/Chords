@@ -1,4 +1,4 @@
-﻿# Chord Simulator — Product Brief & Backlog
+# Chord Simulator — Product Brief & Backlog
 
 _Status: v0.3 implemented · Last updated 2026-10-05 · Live at https://callum121ward.github.io/Chords/_
 
@@ -63,7 +63,7 @@ Hosted free on GitHub Pages.
 18. ✅ Capo support (optionally including the 5th string; key moves with the capo; Clear keeps it). Shipped 2026-09-29.
 19. Left-handed neck.
 20. Saved favourite shapes.
-21. ✅ Tone choice: Mellow (default), Warm, Bright. Shipped 2026-09-29.
+21. ✅ Fixed Warm sound; tone picker removed at user request on 2026-10-05.
 22. ✅ Major and minor keys. Minor shows the seven natural-minor triads plus major V from harmonic minor. Nashville numbers stay relative to the tonic: Am = 1m, C = ♭3 in A minor.
 23. ✅ Changing a tuning preset or retuning an individual string resets all strings to open; the capo stays in place.
 
@@ -89,3 +89,5 @@ Hosted free on GitHub Pages.
 ## 5. Known iPhone/PWA constraints
 - Audio can't start until the user taps something (Safari autoplay rule).
 - The ring/silent switch may mute web audio. We request "playback" audio mode (iOS 17+). Sound confirmed on device 2026-09-29; silent-switch behaviour still to check.
+
+- 2026-10-05 UI follow-up: reclaim neck space by combining note labels and chord lookup in one row, removing repeated key/legend rows, and tightening padding. All playback uses Warm, including for older saved settings.

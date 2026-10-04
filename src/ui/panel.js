@@ -3,8 +3,11 @@ import { nashvilleNumber, degreeOf, keyChords, goesWellWith } from '../music/nas
 
 // The chord panel at the bottom: chord name, Nashville number, notes and chords in the key.
 
-export function renderPanel(el, { chord, notes, key, mode = 'major' }, keyEl = null) {
+export function renderPanel(el, { chord, notes, key, mode = 'major' }, keyEl = null, notesEl = null) {
   el.innerHTML = chord ? chordSection(chord, key) : noChordSection(notes)
+  const tones = chord ? tonesSection(chord) : ''
+  if (notesEl) notesEl.innerHTML = tones
+  else el.innerHTML += tones
   if (keyEl) keyEl.innerHTML = keySection(chord, key, mode)
   else el.innerHTML += keySection(chord, key, mode)
 }
@@ -18,9 +21,6 @@ function chordSection(chord, key) {
     ? `${chord.bass} in bass <span class="muted">(/${degreeOf(chord.bass, key)})</span>`
     : `<span class="muted">Root in bass</span>`
   const also = chord.alternatives.length ? `<div class="muted">also ${chord.alternatives.join(', ')}</div>` : ''
-  const tones = chord.tones
-    .map((t) => `<li class="tone"><b>${t.note}</b><span>${t.role}</span></li>`)
-    .join('')
 
   return `
     <div class="chord-row">
@@ -30,8 +30,15 @@ function chordSection(chord, key) {
         <div class="label">Nashville</div>
         <div class="number">${mainNumber}</div>
       </div>
-    </div>
-    <ul class="tones" aria-label="Notes in the chord">${tones}</ul>`
+    </div>`
+}
+
+function tonesSection(chord) {
+  const tones = chord.tones
+    .map((t) => `<li class="tone"><b>${t.note}</b><span>${t.role}</span></li>`)
+    .join('')
+
+  return `<ul class="tones" aria-label="Notes in the chord">${tones}</ul>`
 }
 
 function noChordSection(notes) {

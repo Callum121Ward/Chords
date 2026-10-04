@@ -53,3 +53,7 @@ Alternative chord names can make the readout grow and reduce neck space. Conside
 - Check light/dark mode, larger text, landscape and VoiceOver. Watch for clipped selectors, long chord names, crowded minor-key chips and overlapping controls.
 
 The most useful next investment is the root/type picker. It removes typing from a frequent action while preserving the current practice screen.
+
+## User feedback follow-up
+
+The user found the expanded panel cramped the neck. The follow-up removes the repeated key heading and visible legend, combines the note labels with Find a chord, and reduces padding. Main button heights remain 44 px. The tone selector is removed and Warm is fixed for all playback. This supersedes the corresponding layout recommendations above.

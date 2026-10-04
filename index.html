@@ -46,11 +46,10 @@
       <section class="panel" aria-label="Chord details and choices">
         <div id="panel" class="chord-reading" aria-live="polite"></div>
         <div class="chord-toolbar">
-          <span id="key-context" class="key-context"></span>
+          <div id="chord-notes"></div>
           <button id="find-chord-toggle" class="find-chord-toggle" type="button" aria-expanded="false" aria-controls="chord-picker">Find a chord</button>
         </div>
         <div id="key-chords"></div>
-        <div class="chord-legend"><span class="legend-current">Current</span><span class="legend-next">Try next</span></div>
         <form id="chord-picker" class="chord-picker" hidden>
           <label for="chord-input">Chord</label>
           <input id="chord-input" type="text" placeholder="Bb, F#m7, D7…" maxlength="32" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-describedby="chord-error" />
@@ -63,7 +62,6 @@
       <div class="play-bar">
         <button id="strum" type="button" class="play-button primary">▶ Strum</button>
         <button id="pick" type="button" class="play-button">Pick</button>
-        <select id="tone" class="play-button" aria-label="Tone"></select>
         <button id="tap-sound" type="button" class="play-button toggle" aria-pressed="true">Tap sound</button>
       </div>
     </div>

@@ -1,4 +1,4 @@
-﻿// A plucked-string sound made with the Karplus–Strong method:
+// A plucked-string sound made with the Karplus–Strong method:
 // fill a short loop with random noise (the "pluck"), then keep going round the loop,
 // averaging neighbouring samples each time. The averaging softens the sound and makes it fade,
 // much like a real string. The loop length sets the pitch.
@@ -29,7 +29,7 @@ export const TONES = {
     body: { lowCut: 110, honk: 1500, honkGain: 4, highCut: 9000 },
   },
 }
-export const DEFAULT_TONE = 'mellow'
+export const DEFAULT_TONE = 'warm'
 
 // The starting shape of the string: random noise, softened and shaped by the pluck position.
 function pluckShape(period, smoothing, pluckPosition, random) {

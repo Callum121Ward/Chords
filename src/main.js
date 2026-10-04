@@ -10,7 +10,7 @@ import { renderNeck, scrollToFret } from './ui/neck.js'
 import { renderPanel } from './ui/panel.js'
 import { loadState, saveState, loadCustomTunings, saveCustomTunings } from './storage.js'
 import { play, playString, PICK_GAP, STRUM_GAP } from './audio/player.js'
-import { TONES, DEFAULT_TONE } from './audio/pluck.js'
+import { DEFAULT_TONE } from './audio/pluck.js'
 
 const KEYS = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F']
 const CUSTOM = 'Custom'
@@ -36,7 +36,6 @@ function defaultState() {
     positions: BANJO.strings.map(() => 0), // all strings open
     capo: NO_CAPO,
     tapSound: true, // play a string's note when you tap the neck
-    tone: DEFAULT_TONE,
     browse: null, // after tapping a key chord: { symbol, name, index } of the shape being shown
   }
 }
@@ -64,11 +63,9 @@ function render() {
 
   renderControls()
   $('tap-sound').setAttribute('aria-pressed', String(state.tapSound))
-  $('tone').innerHTML = options(Object.keys(TONES), state.tone, (t) => TONES[t].label)
   renderStringHeads(flats)
   renderNeck($('neck'), { instrument, baseInstrument: BANJO, capo: state.capo, notes, positions: state.positions })
-  renderPanel($('panel'), { chord, notes, key: state.key, mode: state.mode }, $('key-chords'))
-  $('key-context').textContent = `${state.key} ${state.mode}${state.mode === 'minor' ? ' + major V' : ''}`
+  renderPanel($('panel'), { chord, notes, key: state.key, mode: state.mode }, $('key-chords'), $('chord-notes'))
   renderShapeNav()
 }
 
@@ -96,7 +93,7 @@ function showShape(symbol, name, index) {
   update({ positions: shape, browse: { symbol, name, index } })
   const fretted = shape.filter((p) => p > 0)
   scrollToFret($('neck'), fretted.length ? Math.min(...fretted) : 1)
-  if (state.tapSound) play(currentNotes, STRUM_GAP, state.tone)
+  if (state.tapSound) play(currentNotes, STRUM_GAP, DEFAULT_TONE)
 }
 
 function options(values, selected, label = (v) => v) {
@@ -161,16 +158,11 @@ $('neck').addEventListener('click', (event) => {
   const positions = [...state.positions]
   positions[string] = positions[string] === fret ? 0 : fret // tap again to lift the finger
   update({ positions, browse: null })
-  if (state.tapSound) playString(currentNotes, string, state.tone)
+  if (state.tapSound) playString(currentNotes, string, DEFAULT_TONE)
 })
 
-$('strum').addEventListener('click', () => play(currentNotes, STRUM_GAP, state.tone))
-$('pick').addEventListener('click', () => play(currentNotes, PICK_GAP, state.tone))
-// Changing tone plays a strum so you can hear it straight away.
-$('tone').addEventListener('change', (event) => {
-  update({ tone: event.target.value })
-  play(currentNotes, STRUM_GAP, state.tone)
-})
+$('strum').addEventListener('click', () => play(currentNotes, STRUM_GAP, DEFAULT_TONE))
+$('pick').addEventListener('click', () => play(currentNotes, PICK_GAP, DEFAULT_TONE))
 $('tap-sound').addEventListener('click', () => update({ tapSound: !state.tapSound }))
 
 $('string-heads').addEventListener('click', (event) => {

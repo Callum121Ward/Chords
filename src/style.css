@@ -66,7 +66,7 @@ body {
   display: flex;
   gap: 8px;
   align-items: end;
-  padding: 10px 12px 6px;
+  padding: 6px 12px 4px;
 }
 
 .field {
@@ -104,7 +104,8 @@ select,
 
 /* Chord selection sits beside its related key choices. */
 .chord-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.key-context { font-size: 12px; font-weight: 600; color: var(--muted); }
+#chord-notes { flex: 1; min-width: 0; }
+.find-chord-toggle { flex-shrink: 0; }
 .find-chord-toggle {
   font: inherit; font-size: 13px; font-weight: 600; min-height: 44px;
   padding: 6px 10px; color: var(--accent); background: var(--accent-soft);
@@ -120,11 +121,6 @@ select,
 }
 #chord-error { flex-basis: 100%; margin: 0; color: var(--accent); font-size: 13px; }
 #chord-error:empty { display: none; }
-.chord-legend { display: flex; gap: 12px; color: var(--muted); font-size: 11px; }
-.chord-legend span { display: inline-flex; align-items: center; gap: 4px; }
-.chord-legend span::before { content: ''; width: 8px; height: 8px; border: 1px solid var(--accent); border-radius: 3px; }
-.legend-current::before { background: var(--accent); }
-.legend-next::before { background: var(--accent-soft); }
 button:focus-visible, select:focus-visible, input:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 2px;
 }
@@ -315,7 +311,7 @@ button:focus-visible, select:focus-visible, input:focus-visible {
 .play-bar {
   display: flex;
   gap: 8px;
-  padding: 6px 16px calc(6px + env(safe-area-inset-bottom));
+  padding: 4px 16px calc(4px + env(safe-area-inset-bottom));
   background: var(--surface);
 }
 
@@ -330,15 +326,6 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   border: 1px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
-}
-
-select.play-button {
-  min-width: 0;
-  padding: 0 4px;
-  text-align: center;
-  text-align-last: center;
-  appearance: none;
-  -webkit-appearance: none;
 }
 
 .play-button.primary {
@@ -368,7 +355,7 @@ select.play-button {
 
 .panel {
   border-top: 1px solid var(--border);
-  padding: 10px 16px 4px;
+  padding: 6px 16px 2px;
   gap: 4px;
 }
 
@@ -420,7 +407,7 @@ select.play-button {
 .tones {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 4px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -430,7 +417,7 @@ select.play-button {
   display: flex;
   align-items: baseline;
   gap: 4px;
-  padding: 3px 8px;
+  padding: 2px 5px;
   border: 1px solid var(--border);
   border-radius: 8px;
 }
