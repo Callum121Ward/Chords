@@ -23,5 +23,8 @@ function write(key, value) {
 
 export const loadState = () => read(STATE_KEY)
 export const saveState = (state) => write(STATE_KEY, state)
-export const loadCustomTunings = () => read(TUNINGS_KEY) ?? []
+export const loadCustomTunings = () => {
+  const tunings = read(TUNINGS_KEY)
+  return Array.isArray(tunings) ? tunings.filter(t => t && typeof t.name === 'string' && Array.isArray(t.notes) && t.notes.length === 5 && typeof t.key === 'string') : []
+}
 export const saveCustomTunings = (tunings) => write(TUNINGS_KEY, tunings)

@@ -102,6 +102,21 @@ select,
   background: var(--accent-soft);
 }
 
+.chord-search {
+  padding: 2px 12px 6px;
+  font-size: 13px;
+}
+
+.chord-search summary { cursor: pointer; color: var(--accent); }
+.chord-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 6px; }
+.chord-picker input {
+  flex: 1; min-width: 0; width: 100px; font: inherit; font-size: 16px;
+  padding: 8px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); color: var(--text);
+}
+#chord-error { flex-basis: 100%; margin: 0; color: var(--accent); }
+#chord-error:empty { display: none; }
+
 /* String heads: same proportions as the SVG neck (10% margin + 5 × 18%). */
 .string-heads {
   display: grid;
@@ -434,6 +449,8 @@ select.play-button {
   border-radius: 8px;
   line-height: 1.15;
 }
+
+.key-chips.minor-key { grid-template-columns: repeat(8, 1fr); }
 
 .key-chip.current {
   background: var(--accent);

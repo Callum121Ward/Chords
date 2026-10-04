@@ -3,9 +3,9 @@ import { nashvilleNumber, degreeOf, keyChords, goesWellWith } from '../music/nas
 
 // The chord panel at the bottom: chord name, Nashville number, notes and chords in the key.
 
-export function renderPanel(el, { chord, notes, key }) {
+export function renderPanel(el, { chord, notes, key, mode = 'major' }) {
   el.innerHTML = chord ? chordSection(chord, key) : noChordSection(notes)
-  el.innerHTML += keySection(chord, key)
+  el.innerHTML += keySection(chord, key, mode)
 }
 
 function chordSection(chord, key) {
@@ -42,10 +42,10 @@ function noChordSection(notes) {
       <div class="chord-info"><div>Not a chord</div><div class="muted">${message}</div></div>
     </div>`
 }
-function keySection(chord, key) {
-  const chords = keyChords(key)
+function keySection(chord, key, mode) {
+  const chords = keyChords(key, mode)
   const current = chord ? triadNumber(chord, key) : null
-  const next = chord ? goesWellWith(chord, key).map((c) => c.number) : []
+  const next = chord ? goesWellWith(chord, key, mode).map((c) => c.number) : []
 
   const chips = chords
     .map((c) => {
@@ -56,7 +56,7 @@ function keySection(chord, key) {
     .join('')
 
   return `
-    <ul class="key-chips" aria-label="Chords in ${key}. Solid: this chord. Outlined: goes well next.">${chips}</ul>`
+    <ul class="key-chips ${mode === 'minor' ? 'minor-key' : ''}" aria-label="Chords in ${key} ${mode}${mode === 'minor' ? ', including major V' : ''}. Solid: this chord. Outlined: goes well next.">${chips}</ul>`
 }
 
 // The key-chord number this chord belongs to, ignoring extras like 7 or sus (D7 in G → '5').

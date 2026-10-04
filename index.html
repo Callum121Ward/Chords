@@ -30,6 +30,16 @@
         <button id="clear" type="button" class="small-button">Clear</button>
       </header>
 
+      <details id="chord-search" class="chord-search">
+        <summary>Find a chord</summary>
+        <form id="chord-picker" class="chord-picker">
+          <label for="chord-input">Chord</label>
+          <input id="chord-input" type="text" placeholder="Bb, F#m7, D7…" maxlength="32" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="chord-error" />
+          <button type="submit" class="small-button">Show shape</button>
+          <p id="chord-error" role="status"></p>
+        </form>
+      </details>
+
       <div id="string-heads" class="string-heads"></div>
 
       <div class="neck-area">

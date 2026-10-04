@@ -88,7 +88,7 @@ describe('chord names', () => {
 
   test('interval labels', () => {
     expect(['1P', '3M', '3m', '5P', '5d', '5A', '7m', '7M', '7d'].map(intervalLabel)).toEqual([
-      'R', '3', '♭3', '5', '♭5', '♯5', '♭7', '7', '♭7',
+      'R', '3', '♭3', '5', '♭5', '♯5', '♭7', '7', '♭♭7',
     ])
   })
 })

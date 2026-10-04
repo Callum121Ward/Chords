@@ -66,6 +66,7 @@ export function splitName(name) {
 export function intervalLabel(interval) {
   const [, number, quality] = interval.match(/^(\d+)([PMmdA]+)$/)
   if (number === '1') return 'R'
+  if (quality === 'd' && ['2', '3', '6', '7', '9', '10', '13', '14'].includes(number)) return '♭♭' + number
   if (quality === 'm' || quality === 'd') return '♭' + number
   if (quality === 'dd') return '♭♭' + number
   if (quality === 'A') return '♯' + number

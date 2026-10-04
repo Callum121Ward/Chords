@@ -1,5 +1,5 @@
 ﻿import './style.css'
-import { Note } from 'tonal'
+import { Chord, Note } from 'tonal'
 import { BANJO, TUNINGS } from './music/instrument.js'
 import { playedNotes } from './music/fretboard.js'
 import { identifyChord } from './music/chords.js'
@@ -32,6 +32,7 @@ function defaultState() {
     tuningName: tuning.name,
     tuningNotes: [...tuning.notes],
     key: tuning.key,
+    mode: 'major',
     positions: BANJO.strings.map(() => 0), // all strings open
     capo: NO_CAPO,
     tapSound: true, // play a string's note when you tap the neck
@@ -54,7 +55,8 @@ function update(changes) {
 // ---- Drawing ----
 
 function render() {
-  const flats = prefersFlats(state.key)
+  const requestedRoot = state.browse?.symbol.match(/^[A-G][#b]*/)?.[0] ?? ''
+  const flats = requestedRoot.includes('b') ? true : requestedRoot.includes('#') ? false : prefersFlats(state.key, state.mode)
   const { instrument, tuningNotes } = capoed()
   const notes = playedNotes(instrument, tuningNotes, state.positions, flats)
   const chord = identifyChord(notes)
@@ -65,7 +67,7 @@ function render() {
   $('tone').innerHTML = options(Object.keys(TONES), state.tone, (t) => TONES[t].label)
   renderStringHeads(flats)
   renderNeck($('neck'), { instrument, baseInstrument: BANJO, capo: state.capo, notes, positions: state.positions })
-  renderPanel($('panel'), { chord, notes, key: state.key })
+  renderPanel($('panel'), { chord, notes, key: state.key, mode: state.mode })
   renderShapeNav()
 }
 
@@ -98,8 +100,12 @@ function showShape(symbol, name, index) {
 
 function options(values, selected, label = (v) => v) {
   return values
-    .map((v) => `<option value="${v}" ${v === selected ? 'selected' : ''}>${label(v)}</option>`)
+    .map((v) => `<option value="${escapeHtml(v)}" ${v === selected ? 'selected' : ''}>${escapeHtml(label(v))}</option>`)
     .join('')
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 }
 
 function renderControls() {
@@ -107,7 +113,8 @@ function renderControls() {
   if (state.tuningName === CUSTOM) names.push(CUSTOM)
   $('tuning').innerHTML =
     options(names, state.tuningName) + `<option value="${SAVE}">Save this tuning…</option>`
-  $('key').innerHTML = options(KEYS, state.key)
+  const keyValues = KEYS.flatMap(key => [`${key}:major`, `${key}:minor`])
+  $('key').innerHTML = options(keyValues, `${state.key}:${state.mode}`, v => v.replace(':', ' '))
 
   // Capo menu values: '0' (none), '2' (capo at 2), '2+' (capo at 2, 5th string too).
   const capoValues = ['0']
@@ -181,7 +188,7 @@ $('string-heads').addEventListener('change', (event) => {
   tuningNotes[Number(select.dataset.string)] = select.value
   // If the new notes happen to match a saved tuning, show its name.
   const match = allTunings().find((t) => t.notes.every((n, i) => Note.midi(n) === Note.midi(tuningNotes[i])))
-  update({ tuningNotes, tuningName: match ? match.name : CUSTOM, browse: null })
+  update({ tuningNotes, tuningName: match ? match.name : CUSTOM, positions: BANJO.strings.map(() => 0), browse: null })
 })
 
 $('tuning').addEventListener('change', (event) => {
@@ -190,7 +197,7 @@ $('tuning').addEventListener('change', (event) => {
   if (!tuning) return
   // The tuning's home key, moved up by the capo (Open G with capo 2 → A).
   const key = transposeKey(tuning.key, state.capo.fret, KEYS)
-  update({ tuningName: tuning.name, tuningNotes: [...tuning.notes], key, browse: null })
+  update({ tuningName: tuning.name, tuningNotes: [...tuning.notes], key, mode: tuning.mode ?? 'major', positions: BANJO.strings.map(() => 0), browse: null })
 })
 
 // Moving the capo moves your fingers and the key with it, as on a real banjo.
@@ -205,7 +212,23 @@ $('capo').addEventListener('change', (event) => {
   })
 })
 
-$('key').addEventListener('change', (event) => update({ key: event.target.value, browse: null }))
+$('key').addEventListener('change', (event) => {
+  const [key, mode] = event.target.value.split(':')
+  update({ key, mode, browse: null })
+})
+
+$('chord-picker').addEventListener('submit', (event) => {
+  event.preventDefault()
+  const symbol = $('chord-input').value.trim().replace(/♯/g, '#').replace(/♭/g, 'b')
+  const chord = Chord.get(symbol)
+  if (chord.empty || !chord.tonic) {
+    $('chord-error').textContent = 'Enter a chord such as Bb, F#m7 or D7.'
+    return
+  }
+  $('chord-error').textContent = ''
+  showShape(chord.symbol, chord.symbol.replace(/^([A-G][#b]*)M(?=\/|$|add)/, '$1'), 0)
+  $('chord-search').open = false
+})
 
 $('clear').addEventListener('click', () => update({ positions: BANJO.strings.map(() => 0), browse: null }))
 
@@ -228,7 +251,7 @@ function saveTuning() {
   }
   // Save the key without the capo, so it's right whatever capo you use later.
   const key = transposeKey(state.key, -state.capo.fret, KEYS)
-  const tuning = { name, notes: [...state.tuningNotes], key }
+  const tuning = { name, notes: [...state.tuningNotes], key, mode: state.mode }
   customTunings = [...customTunings.filter((t) => t.name !== name), tuning]
   saveCustomTunings(customTunings)
   update({ tuningName: name })

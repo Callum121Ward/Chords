@@ -23,7 +23,7 @@ export function findShapes(instrument, tuningNotes, chordSymbol) {
     const openMidi = Note.midi(tuningNotes[i])
     const options = [null]
     if (chordChromas.has(openMidi % 12)) options.push(0)
-    for (let fret = string.startFret + 1; fret <= MAX_FRET; fret++) {
+    for (let fret = string.startFret + 1; fret <= Math.min(MAX_FRET, instrument.frets); fret++) {
       if (chordChromas.has((openMidi + fret - string.startFret) % 12)) options.push(fret)
     }
     return options
@@ -33,7 +33,10 @@ export function findShapes(instrument, tuningNotes, chordSymbol) {
   const walk = (i, positions) => {
     if (i === choices.length) {
       const scored = score(positions, instrument, tuningNotes, required, rootChroma)
-      if (scored) shapes.push(scored)
+      if (scored) {
+        const midis = positions.map((p, j) => p === null ? Infinity : Note.midi(tuningNotes[j]) + (p === 0 ? 0 : p - instrument.strings[j].startFret))
+        if (!chord.bass || Math.min(...midis) % 12 === Note.chroma(chord.bass)) shapes.push(scored)
+      }
       return
     }
     for (const option of choices[i]) walk(i + 1, [...positions, option])

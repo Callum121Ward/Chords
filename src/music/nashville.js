@@ -7,8 +7,8 @@ const DEGREES = ['1', '♭2', '2', '♭3', '3', '4', '♭5', '5', '♭6', '6', '
 const SUPERSCRIPT = { 2: '²', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 9: '⁹', 1: '¹', 3: '³' }
 
 // Should notes be spelled with flats in this key? (F, Bb, Eb… → yes)
-export function prefersFlats(key) {
-  return Key.majorKey(key).alteration < 0
+export function prefersFlats(key, mode = 'major') {
+  return (mode === 'minor' ? Key.minorKey(key) : Key.majorKey(key)).alteration < 0
 }
 
 // How far a note is above the key's home note, as a scale number: in G, D → '5'.
@@ -31,15 +31,24 @@ export function nashvilleNumber(chord, key) {
   return chord.bass ? `${number}/${degreeOf(chord.bass, key)}` : number
 }
 
-// The seven chords that belong to a major key, with their numbers.
+// Major triads, or natural-minor triads plus the commonly used major V.
 // `name` is for display (F#°); `symbol` is the chord in the form the music code understands (F#dim).
-export function keyChords(key) {
-  return Key.majorKey(key).triads.map((triad, i) => {
+export function keyChords(key, mode = 'major') {
+  const triads = mode === 'minor' ? Key.minorKey(key).natural.triads : Key.majorKey(key).triads
+  const chords = triads.map((triad) => {
     const name = triad.replace(/dim$/, '°')
     const quality = triad.endsWith('dim') ? '°' : triad.endsWith('m') ? 'm' : ''
-    return { number: `${i + 1}${quality}`, name, symbol: triad }
+    return { number: degreeOf(chordRoot(triad), key) + quality, name, symbol: triad }
   })
+  // Minor songs commonly use a major V from harmonic minor, alongside natural minor's v.
+  if (mode === 'minor') {
+    const symbol = Key.minorKey(key).harmonic.triads[4]
+    chords.push({ number: '5', name: symbol, symbol })
+  }
+  return chords
 }
+
+const chordRoot = (symbol) => symbol.match(/^[A-G][#b]*/)[0]
 
 // Common next chords from each scale degree in a major key (typical folk/country/bluegrass moves).
 const COMMON_NEXT = {
@@ -54,8 +63,14 @@ const COMMON_NEXT = {
 
 // Chords from the key that usually sound good next, after the given chord.
 // Chords from outside the key fall back to the "big three": 1, 4 and 5.
-export function goesWellWith(chord, key) {
-  const numbers = COMMON_NEXT[degreeOf(chord.root, key)] ?? ['1', '4', '5']
-  const inKey = keyChords(key)
-  return numbers.map((n) => inKey.find((c) => c.number === n))
+export function goesWellWith(chord, key, mode = 'major') {
+  const minorNext = {
+    1: ['4m', '5', '♭6'], 2: ['5', '1m'], '♭3': ['♭6', '♭7'],
+    4: ['5', '1m', '♭7'], 5: ['1m', '♭6'], '♭6': ['4m', '5', '♭7'], '♭7': ['1m', '♭3'],
+  }
+  const numbers = mode === 'minor'
+    ? minorNext[degreeOf(chord.root, key)] ?? ['1m', '4m', '5']
+    : COMMON_NEXT[degreeOf(chord.root, key)] ?? ['1', '4', '5']
+  const inKey = keyChords(key, mode)
+  return numbers.map((n) => inKey.find((c) => c.number === n)).filter(Boolean)
 }

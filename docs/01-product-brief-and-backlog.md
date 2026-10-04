@@ -1,6 +1,6 @@
 ﻿# Chord Simulator — Product Brief & Backlog
 
-_Status: v0.1 live, v0.2 in progress · Last updated 2026-09-29 · Live at https://callum121ward.github.io/Chords/_
+_Status: v0.3 implemented · Last updated 2026-10-05 · Live at https://callum121ward.github.io/Chords/_
 
 ## 1. Product brief
 
@@ -59,11 +59,13 @@ Hosted free on GitHub Pages.
 14. Microphone tuner for the real banjo.
 15. Microphone chord recognition (hard).
 16. Other instruments (guitar, mandolin, ukulele, 4-string banjo).
-17. Reverse lookup: pick any chord, see all shapes for it in the current tuning.
+17. ✅ Reverse lookup: enter any supported chord symbol, including chords outside the key and slash chords, and browse the easiest shape at each position in the current tuning. Chords with no easy shape show a message.
 18. ✅ Capo support (optionally including the 5th string; key moves with the capo; Clear keeps it). Shipped 2026-09-29.
 19. Left-handed neck.
 20. Saved favourite shapes.
 21. ✅ Tone choice: Mellow (default), Warm, Bright. Shipped 2026-09-29.
+22. ✅ Major and minor keys. Minor shows the seven natural-minor triads plus major V from harmonic minor. Nashville numbers stay relative to the tonic: Am = 1m, C = ♭3 in A minor.
+23. ✅ Changing a tuning preset or retuning an individual string resets all strings to open; the capo stays in place.
 
 ### Won't have (this version)
 - Accounts, sync, sharing, payments, App Store release.
@@ -79,6 +81,10 @@ Hosted free on GitHub Pages.
 - 2026-09-29: Play buttons sit at the very bottom, so they don't move as the chord panel changes size.
 - 2026-09-29: Compact chord panel (unusual-chord note removed) so an iPhone 17 shows 6+ frets.
 - 2026-09-29: Playable shape = all chord notes (5th optional in 4-note chords), within 4 frets, max 4 fingers, max 1 muted string besides the 5th.
+- 2026-10-05: Personal use, banjo, iPhone first, current appearance and comfortable shape rules remain the goal. Updates go directly to main with git commits.
+- 2026-10-05: Minor keys use natural minor plus the common major V. The numbering remains relative to the tonic's major scale, so minor-key degrees include ♭3, ♭6 and ♭7.
+- 2026-10-05: Chord lookup does not change the selected key. Shapes respect slash-chord bass notes and explicit sharp/flat root spelling. A shape need not exist for every chord under the current playability rules.
+- 2026-10-05: Custom tunings remember major/minor mode; older saved settings and tunings default to major.
 
 ## 5. Known iPhone/PWA constraints
 - Audio can't start until the user taps something (Safari autoplay rule).
