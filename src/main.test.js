@@ -13,7 +13,7 @@ const change = (id, value) => {
 const saved = () => JSON.parse(localStorage.getItem('banjo-chords:state'))
 const finger = () => document.querySelector('[data-string="1"][data-fret="2"]').dispatchEvent(new MouseEvent('click', { bubbles: true }))
 const findChord = symbol => {
-  $('chord-search').open = true
+  if ($('chord-picker').hidden) $('find-chord-toggle').click()
   $('chord-input').value = symbol
   $('chord-picker').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
 }
@@ -76,7 +76,7 @@ test('out-of-key lookup places and browses shapes without changing the key', () 
   expect($('shape-next').disabled).toBe(false)
   $('shape-next').click()
   expect(saved().browse.index).toBe(1)
-  expect($('chord-search').open).toBe(false)
+  expect($('chord-picker').hidden).toBe(true)
 })
 
 test('invalid chords preserve the current shape and show a helpful message', () => {
@@ -85,7 +85,7 @@ test('invalid chords preserve the current shape and show a helpful message', () 
   findChord('not a chord')
   expect(saved().positions).toEqual(positions)
   expect($('chord-error').textContent).toContain('Enter a chord')
-  expect($('chord-search').open).toBe(true)
+  expect($('chord-picker').hidden).toBe(false)
 })
 
 test('unplayable extended chord reports no easy shape and preserves the current notes', () => {
@@ -106,4 +106,24 @@ test('custom tuning names containing markup render as literal text', async () =>
   expect([...$('tuning').options].find(o => o.value === name).textContent).toBe(name)
   change('tuning', name)
   expect(saved().mode).toBe('minor')
+})
+
+
+test('finder keeps a draft during neck interactions and returns focus when dismissed', () => {
+  $('find-chord-toggle').click()
+  expect(document.activeElement).toBe($('chord-input'))
+  $('chord-input').value = 'F#m7'
+  finger()
+  expect($('chord-input').value).toBe('F#m7')
+  expect($('chord-picker').hidden).toBe(false)
+  $('chord-input').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+  expect($('chord-picker').hidden).toBe(true)
+  expect($('find-chord-toggle').getAttribute('aria-expanded')).toBe('false')
+  expect(document.activeElement).toBe($('find-chord-toggle'))
+})
+
+test('key chord buttons still place shapes from their new container', () => {
+  document.querySelector('[data-symbol="C"]').click()
+  expect(saved().browse.symbol).toBe('C')
+  expect(document.querySelector('[data-symbol="C"]').getAttribute('aria-pressed')).toBe('true')
 })

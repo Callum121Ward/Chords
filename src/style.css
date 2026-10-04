@@ -1,9 +1,9 @@
-﻿/* ---- Colours (light and dark) ---- */
+/* ---- Colours (light and dark) ---- */
 :root {
   --bg: #f6f1e8;
   --surface: #fffdf8;
   --text: #2a241c;
-  --muted: #8a7f70;
+  --muted: #6f6558;
   --border: #e2d8c6;
   --accent: #b5561f;
   --accent-text: #ffffff;
@@ -91,7 +91,7 @@ select,
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 6px 8px;
-  min-height: 38px;
+  min-height: 44px;
 }
 
 .small-button {
@@ -102,20 +102,33 @@ select,
   background: var(--accent-soft);
 }
 
-.chord-search {
-  padding: 2px 12px 6px;
-  font-size: 13px;
+/* Chord selection sits beside its related key choices. */
+.chord-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.key-context { font-size: 12px; font-weight: 600; color: var(--muted); }
+.find-chord-toggle {
+  font: inherit; font-size: 13px; font-weight: 600; min-height: 44px;
+  padding: 6px 10px; color: var(--accent); background: var(--accent-soft);
+  border: 1px solid var(--accent); border-radius: 8px; cursor: pointer;
 }
-
-.chord-search summary { cursor: pointer; color: var(--accent); }
-.chord-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 6px; }
+.chord-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 0 4px; }
+.chord-picker[hidden] { display: none; }
+.chord-picker label { font-size: 13px; }
 .chord-picker input {
-  flex: 1; min-width: 0; width: 100px; font: inherit; font-size: 16px;
+  flex: 1; min-width: 0; width: 100px; min-height: 44px; font: inherit; font-size: 16px;
   padding: 8px; border: 1px solid var(--border); border-radius: 8px;
   background: var(--surface); color: var(--text);
 }
-#chord-error { flex-basis: 100%; margin: 0; color: var(--accent); }
+#chord-error { flex-basis: 100%; margin: 0; color: var(--accent); font-size: 13px; }
 #chord-error:empty { display: none; }
+.chord-legend { display: flex; gap: 12px; color: var(--muted); font-size: 11px; }
+.chord-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.chord-legend span::before { content: ''; width: 8px; height: 8px; border: 1px solid var(--accent); border-radius: 3px; }
+.legend-current::before { background: var(--accent); }
+.legend-next::before { background: var(--accent-soft); }
+button:focus-visible, select:focus-visible, input:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.controls select { width: 100%; min-width: 0; }
 
 /* String heads: same proportions as the SVG neck (10% margin + 5 × 18%). */
 .string-heads {
@@ -143,8 +156,8 @@ select,
 }
 
 .mute {
-  width: 34px;
-  height: 26px;
+  width: 44px;
+  height: 36px;
   border: none;
   background: none;
   font-size: 20px;
@@ -153,7 +166,7 @@ select,
 }
 
 .mute.fretted {
-  color: var(--border);
+  color: var(--muted);
 }
 
 .mute.muted {
@@ -195,8 +208,8 @@ select,
 }
 
 .shape-nav button {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border: none;
   border-radius: 999px;
   background: var(--accent);
@@ -308,7 +321,7 @@ select,
 
 .play-button {
   flex: 1;
-  min-height: 38px;
+  min-height: 44px;
   font: inherit;
   font-size: 15px;
   font-weight: 600;
@@ -345,13 +358,18 @@ select.play-button {
 }
 
 /* ---- Chord panel (kept compact so the neck gets most of the screen) ---- */
-.panel {
+.panel,
+.chord-reading {
   display: flex;
   flex-direction: column;
   gap: 8px;
   background: var(--surface);
+}
+
+.panel {
   border-top: 1px solid var(--border);
   padding: 10px 16px 4px;
+  gap: 4px;
 }
 
 .muted {
@@ -371,7 +389,8 @@ select.play-button {
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.02em;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .chord-info {
@@ -437,6 +456,8 @@ select.play-button {
 
 .key-chip {
   width: 100%;
+  min-height: 44px;
+  justify-content: center;
   font: inherit;
   color: var(--text);
   background: none;
@@ -475,4 +496,10 @@ select.play-button {
 .chip-name {
   font-size: 14px;
   font-weight: 700;
+}
+
+/* Keep the neck usable when the keyboard or landscape reduces the viewport. */
+@media (max-height: 600px) {
+  #app { height: auto; min-height: 100dvh; }
+  .neck-area { flex: none; height: 240px; }
 }

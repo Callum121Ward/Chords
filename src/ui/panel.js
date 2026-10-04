@@ -1,11 +1,12 @@
-﻿import { Note } from 'tonal'
+import { Note } from 'tonal'
 import { nashvilleNumber, degreeOf, keyChords, goesWellWith } from '../music/nashville.js'
 
 // The chord panel at the bottom: chord name, Nashville number, notes and chords in the key.
 
-export function renderPanel(el, { chord, notes, key, mode = 'major' }) {
+export function renderPanel(el, { chord, notes, key, mode = 'major' }, keyEl = null) {
   el.innerHTML = chord ? chordSection(chord, key) : noChordSection(notes)
-  el.innerHTML += keySection(chord, key, mode)
+  if (keyEl) keyEl.innerHTML = keySection(chord, key, mode)
+  else el.innerHTML += keySection(chord, key, mode)
 }
 
 function chordSection(chord, key) {
@@ -51,7 +52,7 @@ function keySection(chord, key, mode) {
     .map((c) => {
       const cls = c.number === current ? 'current' : next.includes(c.number) ? 'next' : ''
       return `<li><button type="button" class="key-chip ${cls}" data-symbol="${c.symbol}" data-name="${c.name}"
-        aria-label="Show a shape for ${c.name}"><span class="chip-number">${c.number}</span><span class="chip-name">${c.name}</span></button></li>`
+        aria-pressed="${c.number === current}" aria-label="Show a shape for ${c.name}${cls === 'current' ? ', current chord' : cls === 'next' ? ', suggested next' : ''}"><span class="chip-number">${c.number}</span><span class="chip-name">${c.name}</span></button></li>`
     })
     .join('')
 

@@ -1,4 +1,4 @@
-﻿import './style.css'
+import './style.css'
 import { Chord, Note } from 'tonal'
 import { BANJO, TUNINGS } from './music/instrument.js'
 import { playedNotes } from './music/fretboard.js'
@@ -67,7 +67,8 @@ function render() {
   $('tone').innerHTML = options(Object.keys(TONES), state.tone, (t) => TONES[t].label)
   renderStringHeads(flats)
   renderNeck($('neck'), { instrument, baseInstrument: BANJO, capo: state.capo, notes, positions: state.positions })
-  renderPanel($('panel'), { chord, notes, key: state.key, mode: state.mode })
+  renderPanel($('panel'), { chord, notes, key: state.key, mode: state.mode }, $('key-chords'))
+  $('key-context').textContent = `${state.key} ${state.mode}${state.mode === 'minor' ? ' + major V' : ''}`
   renderShapeNav()
 }
 
@@ -217,6 +218,19 @@ $('key').addEventListener('change', (event) => {
   update({ key, mode, browse: null })
 })
 
+function setChordPicker(open) {
+  $('chord-picker').hidden = !open
+  $('find-chord-toggle').setAttribute('aria-expanded', String(open))
+  $('find-chord-toggle').textContent = open ? 'Close finder' : 'Find a chord'
+  if (open) $('chord-input').focus()
+  else $('find-chord-toggle').focus()
+}
+
+$('find-chord-toggle').addEventListener('click', () => setChordPicker($('chord-picker').hidden))
+$('chord-picker').addEventListener('keydown', event => {
+  if (event.key === 'Escape') setChordPicker(false)
+})
+
 $('chord-picker').addEventListener('submit', (event) => {
   event.preventDefault()
   const symbol = $('chord-input').value.trim().replace(/♯/g, '#').replace(/♭/g, 'b')
@@ -227,13 +241,13 @@ $('chord-picker').addEventListener('submit', (event) => {
   }
   $('chord-error').textContent = ''
   showShape(chord.symbol, chord.symbol.replace(/^([A-G][#b]*)M(?=\/|$|add)/, '$1'), 0)
-  $('chord-search').open = false
+  setChordPicker(false)
 })
 
 $('clear').addEventListener('click', () => update({ positions: BANJO.strings.map(() => 0), browse: null }))
 
 // Tap a chord in the key row to see (and hear) a shape for it.
-$('panel').addEventListener('click', (event) => {
+$('key-chords').addEventListener('click', (event) => {
   const chip = event.target.closest('.key-chip')
   if (chip) showShape(chip.dataset.symbol, chip.dataset.name, 0)
 })

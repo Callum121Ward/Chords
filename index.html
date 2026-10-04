@@ -30,16 +30,6 @@
         <button id="clear" type="button" class="small-button">Clear</button>
       </header>
 
-      <details id="chord-search" class="chord-search">
-        <summary>Find a chord</summary>
-        <form id="chord-picker" class="chord-picker">
-          <label for="chord-input">Chord</label>
-          <input id="chord-input" type="text" placeholder="Bb, F#m7, D7…" maxlength="32" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="chord-error" />
-          <button type="submit" class="small-button">Show shape</button>
-          <p id="chord-error" role="status"></p>
-        </form>
-      </details>
-
       <div id="string-heads" class="string-heads"></div>
 
       <div class="neck-area">
@@ -53,7 +43,21 @@
         </div>
       </div>
 
-      <section id="panel" class="panel" aria-live="polite"></section>
+      <section class="panel" aria-label="Chord details and choices">
+        <div id="panel" class="chord-reading" aria-live="polite"></div>
+        <div class="chord-toolbar">
+          <span id="key-context" class="key-context"></span>
+          <button id="find-chord-toggle" class="find-chord-toggle" type="button" aria-expanded="false" aria-controls="chord-picker">Find a chord</button>
+        </div>
+        <div id="key-chords"></div>
+        <div class="chord-legend"><span class="legend-current">Current</span><span class="legend-next">Try next</span></div>
+        <form id="chord-picker" class="chord-picker" hidden>
+          <label for="chord-input">Chord</label>
+          <input id="chord-input" type="text" placeholder="Bb, F#m7, D7…" maxlength="32" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-describedby="chord-error" />
+          <button type="submit" class="small-button">Show</button>
+          <p id="chord-error" role="status"></p>
+        </form>
+      </section>
 
       <!-- At the very bottom so the buttons never move as the chord panel changes size. -->
       <div class="play-bar">
