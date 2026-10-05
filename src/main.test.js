@@ -144,3 +144,10 @@ test('all playback uses Warm even when an older saved setting selected Bright', 
   expect(playString.mock.calls.every(call => call[2] === 'warm')).toBe(true)
   expect($('tone')).toBeNull()
 })
+
+test.each(['Gadd4', 'Gadd11'])('finder accepts %s and shows an added-fourth chord', symbol => {
+  findChord(symbol)
+  expect($('chord-error').textContent).toBe('')
+  expect(document.querySelector('.chord-name').textContent).toBe('Gadd4')
+  expect($('shape-label').textContent).not.toContain('No easy shape')
+})

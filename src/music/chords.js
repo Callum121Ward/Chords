@@ -1,4 +1,5 @@
-import { Chord, Note } from 'tonal'
+import { Note } from 'tonal'
+import { Chord } from './vocabulary.js'
 
 // Work out which chord a set of notes makes.
 // `notes` are notes with octaves, e.g. ['D3', 'G3', 'B3', null, 'G4'] (null = muted string).
@@ -6,7 +7,11 @@ import { Chord, Note } from 'tonal'
 export function identifyChord(notes) {
   // Lowest note first, so the bass note is known; then drop repeated note names.
   const sorted = notes.filter(Boolean).sort((a, b) => Note.midi(a) - Note.midi(b))
-  const pitchClasses = [...new Set(sorted.map(Note.pitchClass))]
+  const byChroma = new Map()
+  for (const note of sorted) {
+    if (!byChroma.has(Note.chroma(note))) byChroma.set(Note.chroma(note), Note.pitchClass(note))
+  }
+  const pitchClasses = [...byChroma.values()]
   if (pitchClasses.length < 2) return null
 
   const candidates = Chord.detect(pitchClasses).sort((a, b) => commonness(a) - commonness(b))
@@ -39,7 +44,9 @@ function asPlayed(note, playedPitchClasses) {
 // Chord types, most familiar first. tonal can name the same notes several ways
 // (E G C is 'C/E' or 'Em#5'); we pick the name a player would most likely use.
 const FAMILIAR = ['M', 'm', '7', 'm7', 'maj7', '6', 'm6', 'sus4', 'sus2', 'Madd9', 'madd9',
-  '9', 'm9', '7sus4', 'dim', 'dim7', 'm7b5', 'aug', '5']
+  '9', 'm9', '7sus4', 'dim', 'dim7', 'm7b5', 'aug', '5',
+  'add4', 'madd4', '7sus2', '6add9', 'maj9', '9sus4', 'sus24',
+  'm11', '11', '13', 'maj13', 'm13', '7b9', '7#9', '7b5', '7#5', '7no5', '9no5', 'maj7no5', 'm7no5']
 
 // Lower score = more natural name. Slash chords (root not in the bass) score a little worse.
 function commonness(name) {
@@ -66,9 +73,11 @@ export function splitName(name) {
 export function intervalLabel(interval) {
   const [, number, quality] = interval.match(/^(\d+)([PMmdA]+)$/)
   if (number === '1') return 'R'
-  if (quality === 'd' && ['2', '3', '6', '7', '9', '10', '13', '14'].includes(number)) return '♭♭' + number
-  if (quality === 'm' || quality === 'd') return '♭' + number
-  if (quality === 'dd') return '♭♭' + number
-  if (quality === 'A') return '♯' + number
+  if (quality === 'm') return '♭' + number
+  if (quality.startsWith('d')) {
+    const perfect = [1, 4, 5].includes((Number(number) - 1) % 7 + 1)
+    return '♭'.repeat(quality.length + (perfect ? 0 : 1)) + number
+  }
+  if (quality.startsWith('A')) return '♯'.repeat(quality.length) + number
   return number
 }

@@ -1,4 +1,5 @@
-import { Chord, Note } from 'tonal'
+import { Note } from 'tonal'
+import { Chord } from './vocabulary.js'
 
 // Finds playable shapes for a chord in the current tuning.
 // A shape is a list of positions, one per string (null = muted, 0 = open, n = fret),
@@ -15,7 +16,10 @@ export function findShapes(instrument, tuningNotes, chordSymbol) {
   const rootChroma = Note.chroma(chord.tonic)
   // In chords of 4+ notes, players often leave out the 5th; allow that.
   const fifthIndex = chord.intervals.findIndex((i) => i === '5P')
-  const optional = chord.notes.length >= 4 && fifthIndex >= 0 ? Note.chroma(chord.notes[fifthIndex]) : null
+  // Retain the fifth in added-fourth chords: otherwise the new vocabulary no
+  // longer describes the complete set, and recognition can become ambiguous.
+  const addedFourth = chord.type === 'major added fourth' || chord.aliases.includes('madd4')
+  const optional = chord.notes.length >= 4 && fifthIndex >= 0 && !addedFourth ? Note.chroma(chord.notes[fifthIndex]) : null
   const required = [...chordChromas].filter((c) => c !== optional)
 
   // For each string: every position that plays a chord note (or mutes the string).

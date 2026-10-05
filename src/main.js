@@ -1,5 +1,6 @@
 import './style.css'
-import { Chord, Note } from 'tonal'
+import { Note } from 'tonal'
+import { Chord } from './music/vocabulary.js'
 import { BANJO, TUNINGS } from './music/instrument.js'
 import { playedNotes } from './music/fretboard.js'
 import { identifyChord } from './music/chords.js'
